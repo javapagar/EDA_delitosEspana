@@ -1,7 +1,7 @@
 import csv
 
 dataPath = 'src/data/'
-fileName = '2016_1sc'
+fileName = '2020_4sc'
 ext =".csv"
 columnTitle = 2
 sufProvincia ="Provincia de "
@@ -46,10 +46,7 @@ with open(dataPath + fileName+ext, encoding='utf-8',newline='') as File:
                 
                 #imprime cabecera
                 if not data[0]:
-                    dataaux = data[1:4]
-                    dataaux.append("Delito")
-                    dataaux += data[6:-1]
-                    data = dataaux
+                    data[0]="Delito"
 
                 fila =[comunidad,provincia,municipio,code]+list(map(lambda x: x.strip(), data))
 
