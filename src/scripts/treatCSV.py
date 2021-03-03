@@ -1,7 +1,7 @@
 import csv
 
 dataPath = 'src/data/'
-fileName = '2020_4sc'
+fileName = '2016_4sc'
 ext =".csv"
 columnTitle = 2
 sufProvincia ="Provincia de "
@@ -15,19 +15,19 @@ printHead = False
 newFile = []
 
 with open(dataPath + fileName+ext, encoding='utf-8',newline='') as File:  
-    reader = csv.reader(File)
+    #reader = csv.reader(File)
     startData = False
 
-    for row in reader:
+    for row in File:
         '''if i==10:
             break'''
-        if len(row) > 0 and row[0].find(";") == 0 or startData:#columnas
+        if len(row) > 0 and row.find(";") == 0 or startData:#columnas
             
             if not startData:
                 startData = True
-                columnsData = len(row[0].split(";"))
+                columnsData = len(row.split(";"))
 
-            data = row[0].split(";")
+            data = row.split(";")
 
             if len(data) == columnTitle:
                 if data[0].strip().find(sufProvincia) >=0:
