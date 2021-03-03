@@ -1,7 +1,7 @@
 import csv
 
 dataPath = 'src/data/'
-fileName = '2016_4sc'
+fileName = '2020_4sc'
 ext =".csv"
 columnTitle = 2
 sufProvincia ="Provincia de "
