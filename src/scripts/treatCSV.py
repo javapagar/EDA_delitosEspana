@@ -32,14 +32,18 @@ with open(dataPath + fileName+ext, encoding='utf-8',newline='') as File:
             if len(data) == columnTitle:
                 if data[0].strip().find(sufProvincia) >=0:
                     provincia = data[0].strip()[len(sufProvincia):]
+                    nivel = "Provincia"
                 elif data[0].strip().find(sufMunicipio) >=0:
                     municipio = data[0].strip()[len(sufMunicipio):]
+                    nivel = "Municipio"
                 elif data[0].strip().find(sufIsla) >=0:
                     municipio = data[0].strip()[len(sufMunicipio):]
+                    nivel = "Municipio"
                 else:
                     comunidad = data[0].strip()
                     provincia =""
                     municipio="" 
+                    nivel = "Comunidad"
 
 
             elif len(data) == columnsData:
@@ -47,8 +51,12 @@ with open(dataPath + fileName+ext, encoding='utf-8',newline='') as File:
                 #imprime cabecera
                 if not data[0]:
                     data[0]="Delito"
+                    data[-1]="Nivel"
+                else:
+                    data[-1] = nivel
 
                 fila =[comunidad,provincia,municipio,code]+list(map(lambda x: x.strip(), data))
+                
 
                 withCode = fila[4].split(".-")
                 if len(withCode) == 2:
