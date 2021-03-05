@@ -37,6 +37,7 @@ for anyo in listaAnyos:
                     if len(data) == columnTitle:
                         if data[0].strip().find(sufProvincia) >=0:
                             provincia = data[0].strip()[len(sufProvincia):]
+                            municipio="" 
                             nivel = "Provincia"
                         elif data[0].strip().find(sufMunicipio) >=0:
                             municipio = data[0].strip()[len(sufMunicipio):]
