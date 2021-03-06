@@ -2,6 +2,9 @@ import csv
 
 listaAnyos = ['2016','2017','2018','2019','2020']
 
+uniprovinciales = ['ASTURIAS (PRINCIPADO DE)', 'BALEARS (ILLES)','CANTABRIA', 'MADRID (COMUNIDAD DE)','MURCIA (REGION DE)',
+'NAVARRA (COMUNIDAD FORAL DE)','RIOJA (LA)','CIUDAD AUTÓNOMA DE CEUTA','CIUDAD AUTÓNOMA DE MELILLA']
+
 dataPath = 'src/data/'
 fileName = ''
 ext =".csv"
@@ -43,8 +46,9 @@ for anyo in listaAnyos:
                             municipio = data[0].strip()[len(sufMunicipio):]
                             nivel = "Municipio"
                         elif data[0].strip().find(sufIsla) >=0:
-                            municipio = data[0].strip()[len(sufMunicipio):]
-                            nivel = "Municipio"
+                            municipio="" 
+                            provincia = data[0].strip()[len(sufIsla):]
+                            nivel = "Provincia"
                         else:
                             comunidad = data[0].strip()
                             provincia =""
@@ -70,6 +74,12 @@ for anyo in listaAnyos:
                             fila[4]= withCode[1]
                         print(fila)
                         newFile.append(fila)
+                        if fila[-1] == "Comunidad" and comunidad in uniprovinciales:
+                            filaAux = fila.copy()
+                            #la paso a provincia y la vuelvo a añadir
+                            filaAux[-1] = "Provincia"
+                            filaAux[1] = comunidad.split('(')[0].strip()
+                            newFile.append(filaAux)
 
         with open(dataPath + fileName + "clean" + ext,'w', encoding='utf-8',newline = '') as result_file:
             wr = csv.writer(result_file, delimiter=";",quoting=csv.QUOTE_MINIMAL)
