@@ -3,7 +3,8 @@ import numpy as np
 import streamlit as st
 from streamlit_folium import folium_static
 import app.graph as graph
-import app.dataUtil as dtUtil
+import app.dataUtil as dtUtils
+import app.dataFrameUtils as dfUtils
 
 st.set_page_config(page_title='EDA - JAG',
                     page_icon =None,
@@ -12,48 +13,55 @@ st.set_page_config(page_title='EDA - JAG',
 
 st.title("Análisis de los delitos penales cometidos en España")
 
-df_delito = dtUtil.cargarDelito()
-#df_poblacion = dtUtil.cargarPoblacion()
-df_crimen_pob = dtUtil.cargarCrimenPob()
+df_delito = dtUtils.cargarDelito()
+#df_poblacion = dtUtils.cargarPoblacion()
+df_crimen_pob = dtUtils.cargarCrimenPob()
+anyos = list(map(lambda x: int(x),dfUtils.getAnyos()))
 
 selectMenu = st.sidebar.selectbox(
     'Menú',
-    ('Home', 'España','C. Autónomas')
+    ('Home', 'España','Comunidades Autónomas')
+)
+filterAnyo = st.sidebar.slider(
+    'Filtro por año:',
+    min(anyos), max(anyos), (min(anyos),max(anyos))
 )
 
 if selectMenu == 'España':
+   
     selectEvol = st.selectbox(
         '¿Cómo ver la evolución trimestral?',
-        ('Total', 'Por tipo delito')
+        ('Total España', 'Agregada por tipo delito')
     )
 
-    if selectEvol == 'Total':
+    if selectEvol == 'Total España':
 
-        fig = graph.evolNacional(df_delito)
+        fig = graph.evolNacional(df_delito,filterAnyo)
 
         st.plotly_chart(fig)
     else:
     
-        fig2= graph.evolucionDelitos(df_delito)
+        fig2= graph.evolucionDelitos(df_delito,filterAnyo)
 
         st.plotly_chart(fig2)
 
-        fig3 = graph.rankingDelitosEspana(df_delito)
+        fig3 = graph.rankingDelitosEspana(df_delito,filterAnyo)
 
         st.plotly_chart(fig3)
-elif selectMenu == 'C. Autónomas':
+elif selectMenu == 'Comunidades Autónomas':
 
     selectIndicadorCCAA = st.selectbox(
         '¿Tipo de indicador?',
-        ('índice delictivo', 'Ranking CCAA','Ranking CCAA por delito')
+        ('índice delictivo CCAA vs España', 'Ranking CCAA','Ranking CCAA por delito')
     )
-    if selectIndicadorCCAA == 'índice delictivo':
+
+    if selectIndicadorCCAA == 'índice delictivo CCAA vs España':
         fig5 = graph.indiceDelincuencia(df_crimen_pob)
         st.plotly_chart(fig5)
 
     elif selectIndicadorCCAA == 'Ranking CCAA':
 
-        fig4 = graph.rankingCCAAHab(df_crimen_pob)
+        fig4 = graph.rankingCCAAHab(df_crimen_pob,filterAnyo)
         st.plotly_chart(fig4)
         
         fig7 = graph.mapSpainCCAA(df_crimen_pob)
