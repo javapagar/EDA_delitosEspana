@@ -56,30 +56,34 @@ elif selectMenu == 'Comunidades Autónomas':
     )
 
     if selectIndicadorCCAA == 'índice delictivo CCAA vs España':
-        fig5 = graph.indiceDelincuencia(df_crimen_pob)
+        fig5 = graph.indiceDelincuencia(df_crimen_pob,filterAnyo)
         st.plotly_chart(fig5)
 
     elif selectIndicadorCCAA == 'Ranking CCAA':
-
-        fig4 = graph.rankingCCAAHab(df_crimen_pob,filterAnyo)
-        st.plotly_chart(fig4)
-        
-        fig7 = graph.mapSpainCCAA(df_crimen_pob)
-        folium_static(fig7)
+        selectFormato = st.selectbox(
+        'Presentación:',
+        ('Ranking','Mapa')
+        )
+        if selectFormato == "Ranking":
+            fig4 = graph.rankingCCAAHab(df_crimen_pob,filterAnyo)
+            st.plotly_chart(fig4)
+        elif selectFormato == 'Mapa':
+            fig7 = graph.mapSpainCCAA(df_crimen_pob,filterAnyo)
+            folium_static(fig7)
     elif selectIndicadorCCAA == 'Ranking CCAA por delito':
         
-        delitos = graph.getListDelitos(df_crimen_pob)
+        delitos = dfUtils.getListaTipodelitos(df_crimen_pob)
 
         selectDelito = st.selectbox(
         '¿Tipo de Delito?',
         tuple(delitos)
-    )
+        )
         #Muestra todos los rankings
         #for delito in delitos:
             #fig6 = graph.rankingDelitoCCAAHab(df_crimen_pob,delito)
             #st.plotly_chart(fig6)
         
-        fig6 = graph.rankingDelitoCCAAHab(df_crimen_pob,selectDelito)
+        fig6 = graph.rankingDelitoCCAAHab(df_crimen_pob,selectDelito,filterAnyo)
         st.plotly_chart(fig6)
     
 elif selectMenu =='Home':
