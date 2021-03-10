@@ -1,12 +1,11 @@
 import pandas as pd
 import numpy as np
+import json
+import folium as folium
 import plotly.express as px
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import app.dataFrameUtils as dfUtils
-
-def test(df):
-  return dfUtils.getEspanaTipoDelito(df)
 
 def evolNacional(df,withDelito=None):
     qcolumns = dfUtils.getQColumns(df)
@@ -25,13 +24,12 @@ def evolNacional(df,withDelito=None):
                 hover_data={"Trimestre": "|%q trimestre-%Y"},
               )
     fig.update_traces(mode="markers+lines")
-    fig.update_xaxes(dtick="M3",tickformat="%q-%Y", tickangle = 45)
+    fig.update_xaxes(dtick="M3",tickformat="%q -%Y", tickangle = 45)
     fig.update_layout(
                     title="<b>Evolución Trimestral del crimen en España (2016-2020)</b>")
 
     return fig
     #fig.show()
-
 
 def evolucionDelitos(df):
   qcolumns = dfUtils.getQColumns(df)
@@ -134,6 +132,7 @@ def rankingDelitosEspana(df):
   
   return fig
 
+
 def rankingCCAAHab(df):
 
   ene_dic_columns = dfUtils.getEneDicColumns(df)
@@ -197,3 +196,115 @@ def indiceDelincuencia(df):
   fig.update_layout(showlegend=False)
   
   return fig
+
+def rankingDelitosCCAAHab(df):
+  
+  tiposDelito = dfUtils.getListaTipodelitos(df)
+
+  for delito in tiposDelito:
+
+      df_filtered = comunidadUnionCrimenPob[comunidadUnionCrimenPob.Delito.str.contains(delito,regex=False)]
+      df_filtered = df_filtered.sort_values('MediaDelitosPob')
+
+      fig = px.bar(df_filtered, y='Comunidad', x='MediaDelitosPob', text='MediaDelitosPob', title=delito + '(2016-2020)', height = 600, width =900)
+
+      fig.update_traces(texttemplate='%{text:.3s}')
+      fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
+      fig.update_xaxes(
+          tickangle= 45
+          )
+      fig.show()
+
+def rankingDelitoCCAAHab(df,delito):
+  ene_dic_columns = dfUtils.getEneDicColumns(df)
+  pob_columns = dfUtils.getPobColumns(df)
+
+  comunidadUnionCrimenPob = df.groupby(['Comunidad','code','Delito'])[[*ene_dic_columns,*pob_columns]].sum()
+
+  comunidadUnionCrimenPob = dfUtils.calculateMediaDelitoPob(comunidadUnionCrimenPob,100000)
+
+  df_filtered = comunidadUnionCrimenPob[comunidadUnionCrimenPob.Delito.str.contains(delito,regex=False)]
+  df_filtered = df_filtered.sort_values('MediaDelitosPob')
+
+  fig = px.bar(df_filtered, y='Comunidad', x='MediaDelitosPob', text='MediaDelitosPob', title=delito + '(2016-2020)', height = 600, width =900)
+
+  fig.update_traces(texttemplate='%{text:.3s}')
+  fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
+  fig.update_xaxes(
+          tickangle= 45
+          )
+  return fig
+
+def getListDelitos(df):
+  return dfUtils.getListaTipodelitos(df)
+
+
+def mapSpainCCAA(df_crimen_pob):
+
+  ene_dic_columns = dfUtils.getEneDicColumns(df_crimen_pob)
+  pob_columns = dfUtils.getPobColumns(df_crimen_pob) 
+  #spain_provinces.geojson
+  dictComunidades= {'14': 'CIUDAD AUTÓNOMA DE MELILLA',
+                      '02': 'ARAGÓN',
+                      '07':'CASTILLA Y LEON',
+                      '10': 'EXTREMADURA',
+                      '18': 'ASTURIAS (PRINCIPADO DE)',
+                      '05' : 'CANTABRIA',
+                      '19': 'COMUNITAT VALENCIANA',
+                      '01' : 'ANDALUCÍA',
+                      '17':'PAÍS VASCO',
+                      '09': 'CIUDAD AUTÓNOMA DE CEUTA',
+                      '08': 'CATALUÑA',
+                      '03':'BALEARS (ILLES)',
+                      '11': 'GALICIA',
+                      '06': 'CASTILLA - LA MANCHA',
+                      '15':'MURCIA (REGION DE)',
+                      '16':'NAVARRA (COMUNIDAD FORAL DE)',
+                      '13' : 'MADRID (COMUNIDAD DE)',
+                      '04':'CANARIAS',
+                      '12':'RIOJA (LA)'}
+
+  df_codccaa = pd.DataFrame([[key, dictComunidades[key]] for key in dictComunidades.keys()], columns=['codeCCAA','Comunidad'])
+
+  comunidadesUnionCrimenPob = df_crimen_pob.groupby(['Comunidad'])[[*ene_dic_columns,*pob_columns]].sum()
+  comunidadesUnionCrimenPob= comunidadesUnionCrimenPob.reset_index()
+  df = pd.merge(comunidadesUnionCrimenPob,df_codccaa,left_on='Comunidad',right_on='Comunidad')
+
+  df = dfUtils.calculateMediaDelitoPob(df,100000)
+
+  #aseguro el encoding del geojson
+  with open('./data/spain_provinces.geojson', "r", encoding="utf-8" ) as response:
+      espana = json.load(response)
+
+  # Initialize the map:
+  m = folium.Map(location = [35.51487714728974, -5.584498614312028], zoom_start = 5,tiles='cartodbpositron')
+
+  # add tile layers to the map
+  # con esto posibilito que luego en el mapa pueda elegir el 'tipo de vista'
+  #tiles = ['cartodbpositron','stamenwatercolor','openstreetmap','stamenterrain']
+
+  #for tile in tiles:
+      #folium.TileLayer(tile).add_to(m)
+  
+  # Add the color for the chloropleth:
+  choropleth = folium.Choropleth(
+  geo_data=espana,
+  name='choropleth',
+  data=df,
+  columns=['codeCCAA', 'MediaDelitosPob'],
+  #key_on='feature.properties.cod_ccaa',   # dentro del 'geojson', viendo su estructura de datos rovincias-espanolas.geojson
+  key_on='feature.properties.region',   # dentro del 'geojson', viendo su estructura de datos spain_provinces.geojson
+  fill_color='OrRd',
+  fill_opacity=0.7,
+  line_opacity=0.2,
+  legend_name='Delitos por cada 100.000 habitantes',
+  highlight = True,
+  smooth_factor = 0).add_to(m)
+
+  style_function = "font-size: 15px; font-weight: bold"
+  choropleth.geojson.add_child(
+      folium.features.GeoJsonTooltip(['name'], style=style_function, labels=False))
+
+  folium.LayerControl().add_to(m)
+
+  return m

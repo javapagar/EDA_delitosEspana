@@ -1,4 +1,8 @@
 
+#listas
+def getListaTipodelitos(df):
+    return list(set(df.Delito))
+
 #columnas
 def getAnyos():
     return ['2016','2017','2018','2019','2020']
@@ -28,7 +32,7 @@ def addTasaDelitoPob(df, anyo, habitantes):
 def calculateMediaDelitoPob(df,habitantes):
 
     anyos =getAnyos()
-    
+
     for anyo in anyos:
         addTasaDelitoPob(df,anyo,habitantes)
 
