@@ -5,12 +5,12 @@ from streamlit_folium import folium_static
 import app.graph as graph
 import app.dataUtil as dtUtils
 import app.dataFrameUtils as dfUtils
+import streamlit.components.v1 as components
 
 st.set_page_config(page_title='EDA - JAG',
                     page_icon =None,
                     layout='wide',
                     initial_sidebar_state="expanded")
-
 st.title("Análisis de los delitos penales cometidos en España")
 
 df_delito = dtUtils.cargarDelito()
@@ -20,12 +20,28 @@ anyos = list(map(lambda x: int(x),dfUtils.getAnyos()))
 
 selectMenu = st.sidebar.selectbox(
     'Menú',
-    ('Home', 'España','Comunidades Autónomas')
+    ('Home', 'Indicadores','España','Comunidades Autónomas')
 )
-filterAnyo = st.sidebar.slider(
-    'Filtro por año:',
-    min(anyos), max(anyos), (min(anyos),max(anyos))
-)
+
+if selectMenu != 'Home':
+    st.sidebar.markdown('-------')
+
+    filterAnyo = st.sidebar.slider(
+        'Filtro por año:',
+        min(anyos), max(anyos), (min(anyos),max(anyos))
+    )
+
+legend_exppander= st.sidebar.beta_expander('Códigos de delitos')
+legend_exppander.markdown("1.-Homicidios dolosos y asesinatos consumados")
+legend_exppander.markdown("2.-Homicidios dolosos y asesinatos en grado tentativa")
+legend_exppander.markdown("3.-Delitos graves y menos graves de lesiones y riña tumultuaria")
+legend_exppander.markdown("4.-Secuestro")
+legend_exppander.markdown("5.-Delitos contra la libertad e indemnidad sexual")
+legend_exppander.markdown("6.-Robos con violencia e intimidación")
+legend_exppander.markdown("7.- Robos con fuerza en domicilios, establecimientos y otras instalaciones")
+legend_exppander.markdown("8.-Hurtos")
+legend_exppander.markdown("9.-Sustracciones de vehículos")
+legend_exppander.markdown("10.-Tráfico de drogas Resto de infracciones penales")
 
 if selectMenu == 'España':
    
@@ -87,4 +103,45 @@ elif selectMenu == 'Comunidades Autónomas':
         st.plotly_chart(fig6)
     
 elif selectMenu =='Home':
-    st.image('./src/app/img/logo_seo.png')
+    with st.beta_container():
+        with st.beta_container():
+            st.markdown('## Objetivo')
+        with st.beta_container():
+            st.write('Esta aplicación quiere crear un espacio donde se pueda analizar el estado \
+            y la evolución de la criminalidad, tanto a nivel nacional como a nivel \
+            de comunidad autónoma, de forma total o agrupada por tipo de delito de forma interactiva.')
+
+    with st.beta_container():
+        with st.beta_container():
+            st.markdown('## Fuentes de datos')
+            with st.beta_container():
+                col1, col2 = st.beta_columns((1,2))
+                col1.image('./app/img/logo_sec.png')
+                col2.markdown('  ')
+                col2.write("Portal estadístico de Criminalidad, que forma parte de los datos abiertos del Ministerio del Interior, \
+                concretamente del portal estadístico de Criminalidad  ")
+                col2.write("Los datos del Ministerio ofrecen el recuento de crímenes categorizados por tipología en diferentes niveles, \
+                nacional, comunidad autónoma, provincia y municipios de más de 30.000 habitantes. Estos datos se presentan en una \
+                    serie temporal trimestral, y, de momento, comprende el periodo de 2016 a 2020.")
+            with st.beta_container():
+                col1, col2 =st.beta_columns((2,1))
+                col2.image('./app/img/logo_ine.png')
+                col1.markdown('  ')
+                col1.write("Datos demográficos obtenidos de la página del INE a nivel municipio y por año.")
+elif selectMenu =='Indicadores':
+    with st.beta_container():
+        with st.beta_container():
+            st.markdown('## Indicadores')
+        with st.beta_container():
+            st.write("A nivel Nacional:")
+            with st.beta_container():
+                st.markdown('* Evolución temporal por trimestre del número total de delitos cometidos en España:\
+                Indicador: recuento del número total de delitos')
+                st.markdown('* Evolución temporal por trimestre del número total de delitos cometidos en España agrupados por tipo de delito:\
+                Indicador: recuento del número total de delitos')
+                st.markdown('*Ranking de la tipología de delitos en España:\
+                Indicador recuento del número total de delitos')
+#css
+st.markdown('''<style>h1{color: white;background-color: cornflowerblue;text-align: center;padding: 30px;}</style>''', unsafe_allow_html=True)
+st.markdown('''<style>h2{color: cornflowerblue;border-bottom: 5px solid cornflowerblue;padding: 10px;}</style>''', unsafe_allow_html=True)
+st.markdown('''<style>html{font-family: arial,sans-serif;font-size:large;}''',unsafe_allow_html=True)
