@@ -87,4 +87,4 @@ elif selectMenu == 'Comunidades Autónomas':
         st.plotly_chart(fig6)
     
 elif selectMenu =='Home':
-    pass
+    st.image('./src/app/img/logo_seo.png')
