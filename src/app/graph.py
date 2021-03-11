@@ -288,7 +288,7 @@ def mapSpainCCAA(df_crimen_pob, filterAnyo):
         espana = json.load(response)
 
     # Initialize the map:
-    m = folium.Map(location = [35.51487714728974, -5.584498614312028], zoom_start = 5,tiles='cartodbpositron')
+    m = folium.Map(location = [36.68548750831435, -5.196817942588608], zoom_start = 5,tiles='cartodbpositron')
 
     # add tile layers to the map
     # con esto posibilito que luego en el mapa pueda elegir el 'tipo de vista'
@@ -305,7 +305,7 @@ def mapSpainCCAA(df_crimen_pob, filterAnyo):
     columns=['codeCCAA', 'MediaDelitosPob'],
     #key_on='feature.properties.cod_ccaa',   # dentro del 'geojson', viendo su estructura de datos rovincias-espanolas.geojson
     key_on='feature.properties.region',   # dentro del 'geojson', viendo su estructura de datos spain_provinces.geojson
-    fill_color='OrRd',
+    #fill_color='OrRd',
     fill_opacity=0.7,
     line_opacity=0.2,
     legend_name='Delitos por cada 100.000 habitantes',
@@ -315,7 +315,13 @@ def mapSpainCCAA(df_crimen_pob, filterAnyo):
     style_function = "font-size: 15px; font-weight: bold"
     choropleth.geojson.add_child(
         folium.features.GeoJsonTooltip(['name'], style=style_function, labels=False))
-
+    
+    #color
+    tiles = ['stamenwatercolor','openstreetmap','stamenterrain']
+    for tile in tiles:
+        folium.TileLayer(tile).add_to(m)
+    folium.TileLayer('cartodbdark_matter',name="dark mode",control=True).add_to(m)
+    folium.TileLayer('cartodbpositron',name="light mode",control=True).add_to(m)
     folium.LayerControl().add_to(m)
 
     return m
