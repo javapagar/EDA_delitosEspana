@@ -4,6 +4,10 @@ import pandas as pd
 def getListaTipodelitos(df):
     return list(set(df.Delito))
 
+def getListComunidades(df):
+
+    return sorted(list(set(df.Comunidad)))
+
 #columnas
 @st.cache(suppress_st_warning=True)
 def getAnyos():
@@ -22,8 +26,14 @@ def getPobColumns(df):
 def getNacional(df):
     return df[df.Comunidad.str.contains('NACIONAL') & df.Delito.str.contains('TOTAL')]
 
+def getComunidad(df,comunidad):
+    return df[df.Comunidad.str.contains(comunidad,regex=False)]
+
 def getEspanaTipoDelito(df):
     return df[df.Comunidad.str.contains('NACIONAL') & ~ df.code.str.contains('code') & ~ df.code.str.contains('5.') & ~ df.code.str.contains('7.')]
+
+def getComuniadTipoDelito(df,comunidad):
+    return df[df.Nivel.str.contains('Comunidad',regex =False) & df.Comunidad.str.contains(comunidad,regex =False) & ~ df.code.str.contains('code') & ~ df.code.str.contains('5.') & ~ df.code.str.contains('7.')]
 
 def filtrarAnyos(df,anyos):
     return df[df['Anyo'].isin(anyos)] 

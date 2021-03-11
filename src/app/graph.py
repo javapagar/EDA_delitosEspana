@@ -7,7 +7,7 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import app.dataFrameUtils as dfUtils
 
-def evolNacional(df,filterAnyo,withDelito=None):
+def evolTrimestral(df,filterAnyo,withDelito=None):
     
     anyos =range(filterAnyo[0],filterAnyo[1]+1)
     
@@ -15,7 +15,9 @@ def evolNacional(df,filterAnyo,withDelito=None):
     
     comunidadQColumns = ['Comunidad',*qcolumns]
 
-    total_espana = dfUtils. getNacional(df)
+    total_espana =df.groupby('Comunidad').sum()
+    total_espana = total_espana.reset_index()
+    #total_espana = dfUtils. getNacional(df)
     
     #Delitos Totales
     total_espana_graph =total_espana[comunidadQColumns]
@@ -34,7 +36,7 @@ def evolNacional(df,filterAnyo,withDelito=None):
     fig.update_traces(mode="markers+lines")
     fig.update_xaxes(dtick="M3",tickformat="%q -%Y", tickangle = 45)
     fig.update_layout(
-                    title="<b>Evolución Trimestral del crimen en España</b>")
+                    title="<b>Evolución Trimestral del crimen</b>")
     fig.update_layout(hovermode="x")
 
     return fig
@@ -45,7 +47,9 @@ def evolucionDelitos(df,filterAnyo):
 
     qcolumns = dfUtils.getQColumns(df)
     
-    espana_tipo_delito_graph1 = dfUtils.getEspanaTipoDelito(df)
+    #espana_tipo_delito_graph1 = dfUtils.getEspanaTipoDelito(df)
+    espana_tipo_delito_graph1 =df.groupby(['code','Delito']).sum()
+    espana_tipo_delito_graph1=espana_tipo_delito_graph1.reset_index()
 
     delitQColumns = ['code','Delito',*qcolumns]
 

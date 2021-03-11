@@ -50,13 +50,14 @@ if selectMenu == 'España':
     )
 
     if selectEvol == 'Total España':
-
-        fig = graph.evolNacional(df_delito,filterAnyo)
+        df =dfUtils. getNacional(df_delito)
+        fig = graph.evolTrimestral(df,filterAnyo)
 
         st.plotly_chart(fig)
     else:
-    
-        fig2= graph.evolucionDelitos(df_delito,filterAnyo)
+        df = dfUtils.getEspanaTipoDelito(df_delito)
+        
+        fig2= graph.evolucionDelitos(df,filterAnyo)
 
         st.plotly_chart(fig2)
 
@@ -100,7 +101,23 @@ elif selectMenu == 'Comunidades Autónomas':
         
         fig6 = graph.rankingDelitoCCAAHab(df_crimen_pob,selectDelito,filterAnyo)
         st.plotly_chart(fig6)
-    
+    elif selectIndicadorCCAA =='Evolución trimestral CCAA':
+        comunidades = ['Selecciona Comunidad'] + dfUtils.getListComunidades(df_crimen_pob)
+        selectComunidad = st.selectbox(
+            'Comunidad:',
+            tuple(comunidades)
+            )
+        if selectComunidad != 'Selecciona Comunidad':
+            
+            dfComunidad = dfUtils.getComunidad(df_crimen_pob,selectComunidad)
+            evol = graph.evolTrimestral(dfComunidad,filterAnyo)
+            st.plotly_chart(evol)
+
+            df = dfUtils.getComuniadTipoDelito(df_delito,selectComunidad)
+            st.write(df)
+            evolDel= graph.evolucionDelitos(df,filterAnyo)
+
+            st.plotly_chart(evolDel)
 elif selectMenu =='Home':
     with st.beta_container():
         with st.beta_container():
@@ -145,6 +162,10 @@ elif selectMenu =='Indicadores':
             st.markdown('* Ranking de comunidades: tasa media de delitos del periodo')
             st.markdown('* Índice delictivo por cada 1000.000 habitantes: índice de criminalidad')
             st.markdown('* Ranking de CCAA por cada tipo de delito: tasa media de delitos del periodo')
+    
+    
+
+
 
 #css
 st.markdown('''<style>h1{color: white;background-color: cornflowerblue;text-align: center;padding: 30px;}</style>''', unsafe_allow_html=True)
