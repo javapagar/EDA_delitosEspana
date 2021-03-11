@@ -29,11 +29,13 @@ def evolNacional(df,filterAnyo,withDelito=None):
     total_espana_graph.Trimestre =pd.to_datetime(total_espana_graph.Trimestre)
     fig = px.line(total_espana_graph, x="Trimestre", y='Criminalidad',
                 hover_data={"Trimestre": "|%q trimestre-%Y"},
+                width=1000, height=400
               )
     fig.update_traces(mode="markers+lines")
     fig.update_xaxes(dtick="M3",tickformat="%q -%Y", tickangle = 45)
     fig.update_layout(
                     title="<b>Evolución Trimestral del crimen en España</b>")
+    fig.update_layout(hovermode="x")
 
     return fig
     #fig.show()
@@ -120,12 +122,13 @@ def evolucionDelitos(df,filterAnyo):
     )
     fig.update_layout(height=800, width=1000, title_text="Evolucion trimestral por tipo de delitos")
     fig.update_traces(mode="markers+lines")
-    fig.update_xaxes(dtick="M3",tickformat="%q-%Y")
     fig.update_layout(showlegend=False)
     fig.update_xaxes(
+        tickformat="%q-%Y",
         dtick="M3",
         tickangle= 45
         )
+    fig.update_layout(hovermode="x")
     return fig
 
 def rankingDelitosEspana(df,filterAnyo):

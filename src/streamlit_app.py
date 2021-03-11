@@ -5,7 +5,6 @@ from streamlit_folium import folium_static
 import app.graph as graph
 import app.dataUtil as dtUtils
 import app.dataFrameUtils as dfUtils
-import streamlit.components.v1 as components
 
 st.set_page_config(page_title='EDA - JAG',
                     page_icon =None,
@@ -23,7 +22,7 @@ selectMenu = st.sidebar.selectbox(
     ('Home', 'Indicadores','España','Comunidades Autónomas')
 )
 
-if selectMenu != 'Home':
+if selectMenu != 'Home' and selectMenu != 'Indicadores':
     st.sidebar.markdown('-------')
 
     filterAnyo = st.sidebar.slider(
@@ -131,17 +130,24 @@ elif selectMenu =='Home':
 elif selectMenu =='Indicadores':
     with st.beta_container():
         with st.beta_container():
-            st.markdown('## Indicadores')
+            st.markdown('## Estadísticas e indicadores')
         with st.beta_container():
             st.write("A nivel Nacional:")
             with st.beta_container():
-                st.markdown('* Evolución temporal por trimestre del número total de delitos cometidos en España:\
-                Indicador: recuento del número total de delitos')
-                st.markdown('* Evolución temporal por trimestre del número total de delitos cometidos en España agrupados por tipo de delito:\
-                Indicador: recuento del número total de delitos')
-                st.markdown('*Ranking de la tipología de delitos en España:\
-                Indicador recuento del número total de delitos')
+                st.markdown('* Evolución temporal por trimestre del número total de delitos cometidos en España:  \
+                recuento del número total de delitos')
+                st.markdown('* Evolución temporal por trimestre del número total de delitos cometidos en España agrupados por tipo de delito:  \
+                recuento del número total de delitos')
+                st.markdown('* Ranking de la tipología de delitos en España:  \
+                recuento del número total de delitos')
+        with st.beta_container():
+            st.write("A nivel autonómico:")
+            st.markdown('* Ranking de comunidades: tasa media de delitos del periodo')
+            st.markdown('* Índice delictivo por cada 1000.000 habitantes: índice de criminalidad')
+            st.markdown('* Ranking de CCAA por cada tipo de delito: tasa media de delitos del periodo')
+
 #css
 st.markdown('''<style>h1{color: white;background-color: cornflowerblue;text-align: center;padding: 30px;}</style>''', unsafe_allow_html=True)
 st.markdown('''<style>h2{color: cornflowerblue;border-bottom: 5px solid cornflowerblue;padding: 10px;}</style>''', unsafe_allow_html=True)
 st.markdown('''<style>html{font-family: arial,sans-serif;font-size:large;}''',unsafe_allow_html=True)
+st.markdown('''<style>.svg{width:100%;}''',unsafe_allow_html=True)
