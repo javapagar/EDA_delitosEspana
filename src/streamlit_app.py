@@ -132,7 +132,7 @@ elif selectMenu =='Home':
             st.markdown('## Fuentes de datos')
             with st.beta_container():
                 col1, col2 = st.beta_columns((1,2))
-                col1.image('./app/img/logo_sec.png')
+                col1.image('./src/app/img/logo_sec.png')
                 col2.markdown('  ')
                 col2.write("Portal estadístico de Criminalidad, que forma parte de los datos abiertos del Ministerio del Interior, \
                 concretamente del portal estadístico de Criminalidad  ")
@@ -141,7 +141,7 @@ elif selectMenu =='Home':
                     serie temporal trimestral, y, de momento, comprende el periodo de 2016 a 2020.")
             with st.beta_container():
                 col1, col2 =st.beta_columns((2,1))
-                col2.image('./app/img/logo_ine.png')
+                col2.image('./src/app/img/logo_ine.png')
                 col1.markdown('  ')
                 col1.write("Datos demográficos obtenidos de la página del INE a nivel municipio y por año.")
 elif selectMenu =='Indicadores':
