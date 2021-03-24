@@ -288,7 +288,7 @@ def mapSpainCCAA(df_crimen_pob, filterAnyo):
     df = dfUtils.calculateMediaDelitoPob(df,100000,anyos)
 
     #aseguro el encoding del geojson
-    with open('./data/spain_provinces.geojson', "r", encoding="utf-8" ) as response:
+    with open('./src/app/data/spain_provinces.geojson', "r", encoding="utf-8" ) as response:
         espana = json.load(response)
 
     # Initialize the map:
