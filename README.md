@@ -14,11 +14,9 @@ Para el tratamiento de la información:
   * json
 
 Para los gráficos:
-  * plotly.express
-  * from plotly.subplots import make_subplots
-  * plotly.graph_objects
+  * plotly
   * folium
  
  Para la aplicación:
-  * import streamlit as st
-  * from streamlit_folium import folium_static
+  * streamlit
+  * streamlit_folium
