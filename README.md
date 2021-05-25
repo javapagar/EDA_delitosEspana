@@ -1,6 +1,7 @@
 # EDA_delitosEspana
 EDA y aplicación sobre los delitos en España por municipios de 2016-2020
 
+Se puede ver el resultado en la [app streamlit](https://share.streamlit.io/javapagar/eda_delitosespana/main/src/streamlit_app.py)
 ## Datos
 Los datos se obtienen, principalmente:
 * De la página de datos abiertos del Ministerio del Interior, concretamente del portal estadístico de Criminalidad [web](https://estadisticasdecriminalidad.ses.mir.es/publico/portalestadistico/portal/balances.html)
